@@ -9,16 +9,7 @@ import (
 var hb = honeybadger.New("changeme")
 
 func main() {
-	defer func() {
-		if rec := recover(); rec != nil {
-			id, err := hb.Report(rec)
-			if err != nil {
-				fmt.Printf("Failed to report error %s\n", err)
-				panic(err)
-			}
-			fmt.Printf("Recovered and reported error %s\n", id)
-		}
-	}()
+	defer reportPanic()
 
 	_, err := hb.Reportf("a %s error: %v", "formatted", []string{"foo", "bar", "baz"})
 	if err != nil {
@@ -26,4 +17,15 @@ func main() {
 	}
 
 	panic("oh no!")
+}
+
+func reportPanic() {
+	if rec := recover(); rec != nil {
+		id, err := hb.Report(rec)
+		if err != nil {
+			fmt.Printf("Failed to report error %s\n", err)
+			panic(err)
+		}
+		fmt.Printf("Recovered and reported error %s\n", id)
+	}
 }
