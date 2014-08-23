@@ -118,6 +118,8 @@ func (c *Client) Report(e interface{}) (string, error) {
 	return extractErrorID(res)
 }
 
+// Reportf formats according to a format specifier before sending a message to
+// Honeybadger through Report.
 func (c *Client) Reportf(format string, params ...interface{}) (string, error) {
 	return c.Report(fmt.Sprintf(format, params...))
 }
