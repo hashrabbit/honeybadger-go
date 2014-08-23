@@ -155,12 +155,17 @@ func (c *Client) buildNotice(message string, skip int) map[string]interface{} {
 	}
 }
 
-var rootFilter = regexp.MustCompile(fmt.Sprintf("^%s", regexp.QuoteMeta(runtime.GOROOT())))
+var rootFilter = regexp.MustCompile("^" + regexp.QuoteMeta(runtime.GOROOT()))
 
 func (c *Client) filterPath(file string) string {
-	file = string(rootFilter.ReplaceAll([]byte(file), []byte("[GO_ROOT]")))
-	projectPat := regexp.MustCompile(fmt.Sprintf("^%s", regexp.QuoteMeta(c.ProjectRoot)))
-	return string(projectPat.ReplaceAll([]byte(file), []byte("[PROJECT_ROOT]")))
+	file = rootFilter.ReplaceAllString(file, "[GO_ROOT]")
+
+	if c.ProjectRoot != "" {
+		projectPat := regexp.MustCompile("^" + regexp.QuoteMeta(c.ProjectRoot))
+		file = projectPat.ReplaceAllString(file, "[PROJECT_ROOT]")
+	}
+
+	return file
 }
 
 func (c *Client) stacktraceFrames(skip int) []map[string]interface{} {
