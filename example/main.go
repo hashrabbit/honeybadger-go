@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/hashrabbit/honeybadger"
+	"github.com/hashrabbit/honeybadger-go"
 )
 
 var hb = honeybadger.New("changeme")
